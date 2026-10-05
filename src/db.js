@@ -211,28 +211,44 @@ const OPEN_STATUSES = ['submitted', 'under-review', 'assigned', 'in-progress', '
 
 const seedDatabase = async () => {
   const existing = db.prepare('SELECT COUNT(*) AS n FROM users').get();
-
   // The seed is intentionally idempotent. Never attempt to insert the
   // demo dataset again once the database already contains users.
+
+  // We still allow operators to set DEMO_PASSWORD after the DB exists: when
+  // DEMO_PASSWORD is provided at startup and users already exist, update the
+  // seeded demo accounts' password_hash so the README/demo password works.
+  const bcrypt = require('bcryptjs');
+  const crypto = require('node:crypto');
+  const configuredDemoPassword = process.env.DEMO_PASSWORD;
+
   if (existing.n > 0) {
+    if (configuredDemoPassword) {
+      // Update only the four demo users so operator can change demo password
+      // without reseeding the whole database.
+      const pwHash = await bcrypt.hash(configuredDemoPassword, 12);
+      try {
+        db.prepare(
+          "UPDATE users SET password_hash = ? WHERE email IN (?, ?, ?, ?)"
+        ).run(
+          pwHash,
+          'sarahwilliams@example.com',
+          'michael.jacobs@obsrealty.co.za',
+          'johan.vdm@obsrealty.co.za',
+          'admin@obsrealty.co.za'
+        );
+        console.log('[propcare] DEMO_PASSWORD provided - updated demo account passwords to provided value.');
+      } catch (e) {
+        console.log('[propcare] Failed to update demo account passwords: ' + e.message);
+      }
+    }
     return;
   }
 
-const bcrypt = require('bcryptjs');
-const crypto = require('node:crypto');
-
-  // Resolve the demo password.
-  //
-  // DEMO_PASSWORD is optional on purpose. Hard-failing here used to crash the
-  // service on its very first boot, because a fresh Render disk has no database
-  // yet and therefore always needs seeding -- so an operator who followed the
-  // README and set only JWT_SECRET got a boot loop instead of a running app.
-  //
-  // When it is absent we generate a strong random password at seed time instead
-  // of shipping a hardcoded default in the repository. The value is never
-  // logged; it is written to a gitignored file beside the database so the
-  // operator can read it back from the host's filesystem or shell.
-  const configuredDemoPassword = process.env.DEMO_PASSWORD;
+  // Resolve the demo password for initial seeding.
+  // When it is absent we generate a strong random password at seed time
+  // instead of shipping a hardcoded default in the repository. The value is
+  // never logged; it is written to a gitignored file beside the database so
+  // the operator can read it back from the host's filesystem or shell.
   const generatedDemoPassword = configuredDemoPassword
     ? null
     : crypto.randomBytes(18).toString('base64url');
