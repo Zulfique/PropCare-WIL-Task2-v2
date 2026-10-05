@@ -42,7 +42,7 @@
       <section class="login-right" aria-labelledby="welcomeHeading">
         <div class="login-card">
           <header>
-            <div class="login-portal">Horizon Team Portal</div>
+            <div class="login-portal">Obs Realty Portal</div>
             <h2 id="welcomeHeading">Welcome back</h2>
             <div class="login-card-sub">Sign in to continue to your workspace.</div>
           </header>
@@ -84,7 +84,12 @@
     </div>
 
     <!-- APP SHELL -->
-    <div id="app" class="app-shell hidden"></div>
+    <!-- Global chrome elements required by the SPA (kept minimal) -->
+    <div id="modalBackdrop" class="hidden"><div id="modalBox" role="dialog" aria-modal="true"></div></div>
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <button id="signOutBtn" class="hidden" aria-hidden="true"></button>
+    <div id="userAvatar" class="hidden" aria-hidden="true"></div>
+    <div id="app" class="app-shell hidden"><div id="appBody"></div></div>
 
     <script src="data/seed-data.js"></script>
     <script src="js/api.js?v=3.0.0"></script>

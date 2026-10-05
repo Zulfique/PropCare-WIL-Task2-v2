@@ -26436,7 +26436,7 @@
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", { className: "login-panel", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "login-box", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: "Horizon team portal" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: "Obs Realty Portal" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "Welcome back" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "subtle", children: "Sign in to continue to your workspace." }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "demo-select", children: [
